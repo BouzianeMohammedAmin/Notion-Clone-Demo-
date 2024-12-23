@@ -1,9 +1,13 @@
 import './App.css'
-import Cover from './page/Cover'
+import Page from "./page/Page";
 
 function App() {
 
-  return (  <Cover/>)
+  return (
+    <>
+      <Page />
+    </>
+  );
   
  
   
