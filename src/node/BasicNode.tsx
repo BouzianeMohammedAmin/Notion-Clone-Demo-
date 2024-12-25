@@ -6,14 +6,12 @@ import {
   KeyboardEventHandler,
 } from "react";
 import { nanoid } from "nanoid";
+import { useAppState } from "../state/AppStateContext";
 
 type BasicNodeProps = {
   node: NodeData;
   updateFocusedIndex(index: number): void;
   isFocused: boolean;
-  addNode(node: NodeData, index: number): void;
-  removeNodByIndex(index: number): void;
-  changeValue(index: number, value: string): void;
   index: number;
 };
 
@@ -21,11 +19,10 @@ export default function BasicNode({
   node,
   updateFocusedIndex,
   isFocused,
-  addNode,
-  removeNodByIndex,
-  changeValue,
   index,
 }: BasicNodeProps) {
+  const { addNode, changingNodeValue, removeNodeByIndex } = useAppState();
+
   const nodeRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (isFocused) {
@@ -42,7 +39,7 @@ export default function BasicNode({
 
   const handelInput: FormEventHandler<HTMLDivElement> = ({ currentTarget }) => {
     const { textContent } = currentTarget;
-    changeValue(index, textContent || "");
+    changingNodeValue(textContent || "", index);
   };
   const handelClick = () => {
     updateFocusedIndex(index);
@@ -61,17 +58,17 @@ export default function BasicNode({
     if (event.key == "Backspace") {
       if (target.textContent?.length === 0) {
         event.preventDefault();
-        removeNodByIndex(index);
+        removeNodeByIndex(index);
         updateFocusedIndex(index - 1);
       } else if (window?.getSelection()?.anchorOffset === 0) {
-        // cursor in the beginning of content
+        // cursor in the beginning of content  or selected  all content text of node
         event.preventDefault();
-        removeNodByIndex(index - 1);
+        removeNodeByIndex(index - 1);
         updateFocusedIndex(index - 1);
       }
     }
   };
-  
+
   return (
     <div
       className="mx-2 px-2 outline-none bg-slate-50"

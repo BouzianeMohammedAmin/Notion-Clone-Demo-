@@ -8,6 +8,7 @@ type TitleProps = {
 };
 
 export default function Title({ title, onChangeTitle, addNode }: TitleProps) {
+  
   const headerRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
